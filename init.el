@@ -16,7 +16,8 @@
 (setq package-enable-at-startup nil)
 (setq package-archives '(("org"   . "http://orgmode.org/elpa/")
                          ("gnu"   . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
 
 ;; Bootstrap `use-package`
@@ -24,6 +25,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+
+;;; Builtins config
+(show-paren-mode 1)
 
 ;;; Evil
 (load "$HOME/.emacs.d/package-config/evil.el")
@@ -35,6 +39,15 @@
 
 ;;; Window Management
 (load "$HOME/.emacs.d/package-config/ace-window.el")
+
+;;; Project Management
+(load "$HOME/.emacs.d/package-config/projectile.el")
+(load "$HOME/.emacs.d/package-config/helm-projectile.el")
+
+;;; Search
+(load "$HOME/.emacs.d/package-config/ag.el")
+(load "$HOME/.emacs.d/package-config/helm-ag.el")
+(load "$HOME/.emacs.d/package-config/avy.el")
 
 ;;; Languages
 ; Python

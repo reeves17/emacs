@@ -51,8 +51,8 @@
   "Push current HYDRA to a stack.
 This is a macro so I don't have to quote the hydra name."
   `(progn
-     (jakemacs-hydra-push hydra-curr-body-fn)  ; TODO function okay for pretty-hydra?
-     (call-interactively ',hydra)))  ; TODO fctn okay?
+     (jakemacs-hydra-push hydra-curr-body-fn)
+     (call-interactively ',hydra)))
 
 (defun jakemacs-hydra-help ()
   "Show help buffer for current hydra."
@@ -112,61 +112,76 @@ This is a macro so I don't have to quote the hydra name."
 (defhydra jakemacs-base (:color blue)
   "base"
   ("," jakemacs-hydra-pop "back" :color blue)
-  ("x" counsel-M-x "M-x")  ; TODO change to HELM-M-x
+  ("SPC" helm-M-x "M-x")  ; TODO change to HELM-M-x
   ("C-s" save-buffer "Save")
   ("/" undo-tree-undo "undo" :color red)
-  ("\\" undo-tree-redo "redo" :color red)
+  ("?" undo-tree-redo "redo" :color red)
   ("8" (switch-to-buffer "*scratch*") "*scratch*")
-  ("?" jakemacs-hydra-help "Menu help")
   ("." jakemacs-dispatch-mode-hydra "Major mode hydras")
   ("u" (hydra--universal-argument current-prefix-arg) "C-u" :color red))
 
 ;;; jakemacs hydra
 
+;! go to window number
+(defun goto-window-number (n)
+  ; go left a bunch
+  (setq i 9)
+  (while (> i 0)
+    (ignore-errors (windmove-left))
+    (setq i (1- i)))
+  ; go right n times
+  (while (> n 1)
+    (windmove-right)
+    (setq n (1- n))))
+
 ;; Root
-(pretty-hydra-define jakemacs (:color blue
-                               :body-pre (jakemacs-hydra-reset)
-                               :inherit (jakemacs-base/heads)
-                               :idle 0.5)
+(pretty-hydra-define jakemacs
+  (:hint nil :color blue :inherit (jakemacs-base/heads) :idle 0.1)
   ("jakemacs"
-   (("a" (jakemacs-open-hydra jakemacs-applications/body) "Applications")
-    ("b" (jakemacs-open-hydra jakemacs-buffers/body) "Buffers")
-    ("f" (jakemacs-open-hydra jakemacs-files/body) "Files")
+   (("a" (jakemacs-open-hydra jakemacs-applications/body) "applications")
+    ("b" (jakemacs-open-hydra jakemacs-buffers/body) "buffers")
+    ("f" (jakemacs-open-hydra jakemacs-files/body) "files")
     ("F" (jakemacs-open-hydra jakemacs-frames/body) "Frames")
-    ("j" (jakemacs-open-hydra jakemacs-jump/body) "Jump")
-    ("o" (jakemacs-open-hydra jakemacs-org/body) "Org")
-    ("p" (jakemacs-open-hydra jakemacs-projectile/body) "Projects")
-    ("q" (jakemacs-open-hydra jakemacs-quit/body) "Quit")
-    ("s" (jakemacs-open-hydra jakemacs-search/body) "Search")
-    ("w" (jakemacs-open-hydra jakemacs-windows/body) "Windows")
-   )
+    ("j" (jakemacs-open-hydra jakemacs-jump/body) "fump")
+    ("o" (jakemacs-open-hydra jakemacs-org/body) "org")
+    ("p" (jakemacs-open-hydra jakemacs-projectile/body) "projectile")
+    ("q" (jakemacs-open-hydra jakemacs-quit/body) "quit")
+    ("s" (jakemacs-open-hydra jakemacs-search/body) "search")
+    ("w" (jakemacs-open-hydra jakemacs-windows/body) "windows"))
+   "window navigation"
+   (("1" (goto-window-number 1) "1")
+    ("2" (goto-window-number 2) "2")
+    ("3" (goto-window-number 3) "3")
+    ("4" (goto-window-number 4) "4")
+    ("5" (goto-window-number 5) "5")
+    ("6" (goto-window-number 6) "6")
+    ("7" (goto-window-number 7) "7")
+    ("8" (goto-window-number 8) "8")
+    ("9" (goto-window-number 9) "9"))
   )
 )
 
 ;; Applications
-(pretty-hydra-define jakemacs-applications (:hint nil
-                                            :color blue
-                                            :inherit (jakemacs-base/heads))
+(pretty-hydra-define jakemacs-applications
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("Browser"
     (("a" helm-M-x "M-x"))
   )
 )
 
 ;; Buffers
-(pretty-hydra-define jakemacs-buffers (:hint nil
-				       :color blue
-				       :inherit (jakemacs-base/heads))
+(pretty-hydra-define jakemacs-buffers
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("Temp Header"
-    (("b" helm-buffers-list "buffers")
-     ("d" kill-buffer "kill"))
+    (("b" helm-mini "buffers")
+     ("d" kill-this-buffer "kill"))
   )
 )
 
 
 ;; File
-(pretty-hydra-define jakemacs-files (:hint nil
-				     :color blue
-                                     :inherit (jakemacs-base/heads))
+(pretty-hydra-define jakemacs-files
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("Basic"
     (("s" save-buffer "save buffer")
      ("w" write-file "write file")
@@ -174,26 +189,76 @@ This is a macro so I don't have to quote the hydra name."
   )
 )
 
+;; Projectile
+(pretty-hydra-define jakemacs-projectile
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
+  ("Find File"
+    (("f" projectile-find-file "file")
+     ("w" projectile-find-file-dwim "file dwim")  ; because d is for dir
+     ("p" projectile-find-file-in-directory "file curr dir")  ; p for pwd?
+     ("r" projectile-recentf "recent file")
+     ("d" projectile-find-dir "dir"))
+    "Search/Tags"
+    (("a" helm-projectile-ag "ag")
+     ("g" ggtags-update-tags "update gtags")
+     ("m" projectile-multi-occur "multi-occur"))
+    "Buffers"
+    (("i" projectile-ibuffer "ibuffer")
+     ("b" projectile-switch-to-buffer "switch to buffer")
+     ("K" projectile-kill-buffers "kill all buffers"))
+    "Cache"
+    (("c" projectile-invalidate-cache "clear cache")
+     ("x" projectile-remove-known-project "remove project")
+     ("X" projectile-cleanup-known-projects "cleanup non-existing projects")
+     ("z" projectile-cache-current-file "cache current file"))
+    "Other Window"
+    (("o" (jakemacs-open-hydra jakemacs-projectile-other/body) "Other Window"))
+  )
+)
+
+; Projectile Other Window
+(pretty-hydra-define jakemacs-projectile-other
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
+  ("Other Window"
+    (("f" projectile-find-file-other-window "file")
+     ("w" projectile-find-file-dwim-other-window "file dwim")
+     ("d" projectile-find-dir-other-window "dir")
+     ("b" projectile-switch-to-buffer-other-window "buffer"))
+  )
+)
+   
 ;; Quit
-(pretty-hydra-define jakemacs-quit (:hint nil
-                                    :color blue
-                                    :inherit (jakemacs-base/heads))
+(pretty-hydra-define jakemacs-quit
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("Quit"
     (("q" save-buffers-kill-emacs "save buffers and quit"))
   )
 )
 
-;! Window functions
-(defun split-3-ways ()
+;; Search
+(pretty-hydra-define jakemacs-search
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
+  ("Projectile"
+   (("a" helm-projectile-ag "projectile ag"))
+   "Avy"
+   (("c" avy-goto-char "char")
+    ("w" avy-goto-word-1 "word")
+    ("l" avy-goto-line "line"))
+  )
+)
+
+;;! Window functions
+;! split frame into n windows
+(defun split-n-ways (n)
   (delete-other-windows)
-  (split-window-right)
-  (split-window-right)
+  (while (> n 1)
+    (split-window-right)
+    (setq n (1- n)))
   (balance-windows))
 
 ;; Windows
-(pretty-hydra-define jakemacs-windows (:hint nil
-                                       :color blue
-                                       :inherit (jakemacs-base/heads))
+(pretty-hydra-define jakemacs-windows
+  (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("control"
     (("a" ace-window "ace-window")
      ("d" delete-window "delete window")
@@ -205,8 +270,10 @@ This is a macro so I don't have to quote the hydra name."
      ("}" enlarge-window "enlarge vertically" :color red)
     )
    "Not sure the header here"
-    (("2" delete-other-windows "delete other windows")
-     ("3" (split-3-ways) "split 3")
+    (("1" delete-other-windows "delete other windows")
+     ("2" (split-n-ways 2) "2 windows")
+     ("3" (split-n-ways 3) "3 windows")
+     ("4" (split-n-ways 4) "4 windows")
     )
   )
 )
