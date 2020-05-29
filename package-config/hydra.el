@@ -119,8 +119,7 @@ This is a macro so I don't have to quote the hydra name."
   ("8" (switch-to-buffer "*scratch*") "*scratch*")
   ("?" jakemacs-hydra-help "Menu help")
   ("." jakemacs-dispatch-mode-hydra "Major mode hydras")
-  ("u" (hydra--universal-argument current-prefix-arg) "C-u" :color red)
-  ("q" nil "quit"))
+  ("u" (hydra--universal-argument current-prefix-arg) "C-u" :color red))
 
 ;;; jakemacs hydra
 
@@ -129,10 +128,37 @@ This is a macro so I don't have to quote the hydra name."
                                :inherit (jakemacs-base/heads)
                                :idle 0.5)
   ("jakemacs"
-  (("a" (jakemacs-open-hydra jakemacs-applications/body) "Applications"))))
+   (("a" (jakemacs-open-hydra jakemacs-applications/body) "Applications")
+    ("b" (jakemacs-open-hydra jakemacs-buffers/body) "Buffers")
+    ("f" (jakemacs-open-hydra jakemacs-files/body) "Files")
+    ("F" (jakemacs-open-hydra jakemacs-frames/body) "Frames")
+    ("j" (jakemacs-open-hydra jakemacs-jump/body) "Jump")
+    ("o" (jakemacs-open-hydra jakemacs-org/body) "Org")
+    ("p" (jakemacs-open-hydra jakemacs-projectile/body) "Projects")
+    ("q" (jakemacs-open-hydra jakemacs-quit/body) "Quit")
+    ("s" (jakemacs-open-hydra jakemacs-search/body) "Search")
+    ("w" (jakemacs-open-hydra jakemacs-windows/body) "Windows")
+   )
+  )
+)
 
 (pretty-hydra-define jakemacs-applications (:hint nil
                                             :color blue
                                             :inherit (jakemacs-base/heads))
   ("Browser"
     (("a" helm-M-x "M-x"))))
+
+(pretty-hydra-define jakemacs-windows (:hint nil
+                                       :color blue
+                                       :inherit (jakemacs-base/heads))
+  ("ace-window"
+    (("a" ace-window "ace-window")
+     ("d" delete-window "delete window")
+     ("[" shrink-window-horizontally "shrink horizontally")
+     ("]" enlarge-window-horizontally "enlarge horizontally")
+     ("{" shrink-window-vertically "shrink vertically")
+     ("}" enlarge-window-vertically "enlarge vertically")
+    )
+  )
+)
+
