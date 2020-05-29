@@ -152,6 +152,17 @@ This is a macro so I don't have to quote the hydra name."
   )
 )
 
+;; Buffers
+(pretty-hydra-define jakemacs-buffers (:hint nil
+				       :color blue
+				       :inherit (jakemacs-base/heads))
+  ("Temp Header"
+    (("b" helm-buffers-list "buffers")
+     ("d" kill-buffer "kill"))
+  )
+)
+
+
 ;; File
 (pretty-hydra-define jakemacs-files (:hint nil
 				     :color blue
@@ -172,19 +183,30 @@ This is a macro so I don't have to quote the hydra name."
   )
 )
 
+;! Window functions
+(defun split-3-ways ()
+  (delete-other-windows)
+  (split-window-right)
+  (split-window-right)
+  (balance-windows))
 
 ;; Windows
 (pretty-hydra-define jakemacs-windows (:hint nil
                                        :color blue
                                        :inherit (jakemacs-base/heads))
-  ("ace-window"
+  ("control"
     (("a" ace-window "ace-window")
      ("d" delete-window "delete window")
-     ("[" shrink-window-horizontally "shrink horizontally")
-     ("]" enlarge-window-horizontally "enlarge horizontally")
-     ("{" shrink-window-vertically "shrink vertically")
-     ("}" enlarge-window-vertically "enlarge vertically")
+    )
+   "sizing"
+    (("[" shrink-window-horizontally "shrink horizontally" :color red)
+     ("]" enlarge-window-horizontally "enlarge horizontally" :color red)
+     ("{" shrink-window "shrink vertically" :color red)
+     ("}" enlarge-window "enlarge vertically" :color red)
+    )
+   "Not sure the header here"
+    (("2" delete-other-windows "delete other windows")
+     ("3" (split-3-ways) "split 3")
     )
   )
 )
-

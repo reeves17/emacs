@@ -3,6 +3,7 @@
 (tool-bar-mode -1)  ; remove tool bar
 (tooltip-mode -1)  ; disable tooltips
 (menu-bar-mode -1)  ; remove menu bar
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Fancy titlebar for MacOS
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
