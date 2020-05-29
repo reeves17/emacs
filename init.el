@@ -27,6 +27,7 @@
 ;;; Evil
 (load "$HOME/.emacs.d/package-config/evil.el")
 (load "$HOME/.emacs.d/package-config/doom-themes.el")
+(load "$HOME/.emacs.d/package-config/evil-escape.el")
 
 ;;; Completion
 (load "$HOME/.emacs.d/package-config/helm.el")

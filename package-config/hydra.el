@@ -123,6 +123,7 @@ This is a macro so I don't have to quote the hydra name."
 
 ;;; jakemacs hydra
 
+;; Root
 (pretty-hydra-define jakemacs (:color blue
                                :body-pre (jakemacs-hydra-reset)
                                :inherit (jakemacs-base/heads)
@@ -142,12 +143,37 @@ This is a macro so I don't have to quote the hydra name."
   )
 )
 
+;; Applications
 (pretty-hydra-define jakemacs-applications (:hint nil
                                             :color blue
                                             :inherit (jakemacs-base/heads))
   ("Browser"
-    (("a" helm-M-x "M-x"))))
+    (("a" helm-M-x "M-x"))
+  )
+)
 
+;; File
+(pretty-hydra-define jakemacs-files (:hint nil
+				     :color blue
+                                     :inherit (jakemacs-base/heads))
+  ("Basic"
+    (("s" save-buffer "save buffer")
+     ("w" write-file "write file")
+     ("f" helm-find-files "find file"))
+  )
+)
+
+;; Quit
+(pretty-hydra-define jakemacs-quit (:hint nil
+                                    :color blue
+                                    :inherit (jakemacs-base/heads))
+  ("Quit"
+    (("q" save-buffers-kill-emacs "save buffers and quit"))
+  )
+)
+
+
+;; Windows
 (pretty-hydra-define jakemacs-windows (:hint nil
                                        :color blue
                                        :inherit (jakemacs-base/heads))
