@@ -2,6 +2,7 @@
 
 (use-package major-mode-hydra
   :ensure t
+  :after treemacs evil
   ;:bind
   ;("SPC" . major-mode-hydra)
 )
@@ -122,8 +123,11 @@ This is a macro so I don't have to quote the hydra name."
 
 ;;; jakemacs hydra
 
+;;! body functions
 ;! go to window number
 (defun goto-window-number (n)
+  ; this is to escape treemacs in case you are inside it
+  (ace-window)
   ; go left a bunch
   (setq i 9)
   (while (> i 0)
@@ -133,6 +137,13 @@ This is a macro so I don't have to quote the hydra name."
   (while (> n 1)
     (windmove-right)
     (setq n (1- n))))
+
+;! go to treemacs window
+(defun goto-treemacs-window ()
+  (treemacs-select-window)
+  (local-unset-key (kbd "SPC"))
+  (local-set-key (kbd "SPC") 'jakemacs/body)
+  (local-set-key (kbd "J") 'jakemacs/body))
 
 ;; Root
 (pretty-hydra-define jakemacs
@@ -148,16 +159,17 @@ This is a macro so I don't have to quote the hydra name."
     ("q" (jakemacs-open-hydra jakemacs-quit/body) "quit")
     ("s" (jakemacs-open-hydra jakemacs-search/body) "search")
     ("w" (jakemacs-open-hydra jakemacs-windows/body) "windows"))
-   "window navigation"
-   (("1" (goto-window-number 1) "1")
-    ("2" (goto-window-number 2) "2")
-    ("3" (goto-window-number 3) "3")
-    ("4" (goto-window-number 4) "4")
-    ("5" (goto-window-number 5) "5")
-    ("6" (goto-window-number 6) "6")
-    ("7" (goto-window-number 7) "7")
-    ("8" (goto-window-number 8) "8")
-    ("9" (goto-window-number 9) "9"))
+   "goto window"
+   (("1" (goto-window-number 1) "window 1")
+    ("2" (goto-window-number 2) "window 2")
+    ("3" (goto-window-number 3) "window 3")
+    ("4" (goto-window-number 4) "window 4")
+    ("5" (goto-window-number 5) "window 5")
+    ("6" (goto-window-number 6) "window 6")
+    ("7" (goto-window-number 7) "window 7")
+    ("8" (goto-window-number 8) "window 8")
+    ("9" (goto-window-number 9) "window 9")
+    ("0" (goto-treemacs-window) "treemacs window"))
   )
 )
 
@@ -193,7 +205,7 @@ This is a macro so I don't have to quote the hydra name."
 (pretty-hydra-define jakemacs-projectile
   (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("Find File"
-    (("f" projectile-find-file "file")
+    (("f" helm-projectile-find-file "file")
      ("w" projectile-find-file-dwim "file dwim")  ; because d is for dir
      ("p" projectile-find-file-in-directory "file curr dir")  ; p for pwd?
      ("r" projectile-recentf "recent file")
@@ -256,20 +268,28 @@ This is a macro so I don't have to quote the hydra name."
     (setq n (1- n)))
   (balance-windows))
 
+;! switch to minubuffer
+(defun switch-to-minibuffer ()
+  "Switch to minibuffer window."
+  (interactive)
+  (if (active-minibuffer-window)
+      (select-window (active-minibuffer-window))
+    (error "Minibuffer is not active")))
+
 ;; Windows
 (pretty-hydra-define jakemacs-windows
   (:hint nil :color blue :inherit (jakemacs-base/heads))
   ("control"
     (("a" ace-window "ace-window")
      ("d" delete-window "delete window")
-    )
+     ("b" (switch-to-minibuffer) "minibuffer"))
    "sizing"
     (("[" shrink-window-horizontally "shrink horizontally" :color red)
      ("]" enlarge-window-horizontally "enlarge horizontally" :color red)
      ("{" shrink-window "shrink vertically" :color red)
      ("}" enlarge-window "enlarge vertically" :color red)
     )
-   "Not sure the header here"
+   "Split"
     (("1" delete-other-windows "delete other windows")
      ("2" (split-n-ways 2) "2 windows")
      ("3" (split-n-ways 3) "3 windows")

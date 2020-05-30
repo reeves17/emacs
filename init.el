@@ -27,12 +27,25 @@
 (require 'use-package)
 
 ;;; Builtins config
+; parentheses matching
 (show-paren-mode 1)
+; enable recentf
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
 
 ;;; Evil
 (load "$HOME/.emacs.d/package-config/evil.el")
 (load "$HOME/.emacs.d/package-config/doom-themes.el")
 (load "$HOME/.emacs.d/package-config/evil-escape.el")
+
+;;; File Tree
+(load "$HOME/.emacs.d/package-config/all-the-icons.el")
+(load "$HOME/.emacs.d/package-config/treemacs.el")
+(load "$HOME/.emacs.d/package-config/treemacs-projectile.el")
+(load "$HOME/.emacs.d/package-config/treemacs-evil.el")
+(load "$HOME/.emacs.d/package-config/treemacs-magit.el")
+(load "$HOME/.emacs.d/package-config/treemacs-icons-dired.el")
 
 ;;; Completion
 (load "$HOME/.emacs.d/package-config/helm.el")
@@ -43,6 +56,9 @@
 ;;; Project Management
 (load "$HOME/.emacs.d/package-config/projectile.el")
 (load "$HOME/.emacs.d/package-config/helm-projectile.el")
+
+;;; Version Control
+(load "$HOME/.emacs.d/package-config/magit.el")
 
 ;;; Search
 (load "$HOME/.emacs.d/package-config/ag.el")
